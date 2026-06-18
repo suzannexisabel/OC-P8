@@ -1,3 +1,7 @@
 test-model.ipynb
 mlflow.db
 models/artifacts/model.pkl
+__pycache__/
+*.pyc
+mlruns/
+.env
