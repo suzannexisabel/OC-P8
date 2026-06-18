@@ -4,9 +4,7 @@ emoji: 🐠
 colorFrom: blue
 colorTo: purple
 sdk: docker
-sdk_version: 6.19.0
-python_version: '3.13'
-app_file: app.py
+app_port: 7860
 pinned: false
 short_description: 'Projet 8 : Confirmez vos compétences en MLOps (Partie 2/2)'
 ---
