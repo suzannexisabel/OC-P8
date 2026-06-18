@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 import pandas as pd
 
@@ -14,7 +15,7 @@ app = FastAPI(
 
 @app.get("/")
 def root():
-    return {"message": "API opérationnelle"}
+    return RedirectResponse(url="/docs")
 
 
 @app.get("/health")
