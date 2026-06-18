@@ -7,8 +7,8 @@ from app.model import model
 
 
 app = FastAPI(
-    title="API de prédiction ML  ",
-    description="API FastAPI pour exposer un modèle MLflow",
+    title="API de scoring crédit",
+    description="API MLOps permettant de prédire le risque de défaut d’un client à partir de données applicatives, bureau et historiques.",
     version="1.0.0"
 )
 
@@ -22,7 +22,12 @@ def health():
     return {"status": "ok"}
 
 
-@app.post("/predict")
+@app.post(
+        "/predict",
+        summary="Prédire le risque de défaut client",
+        description="Retourne une prédiction binaire et une probabilité de défaut à partir des caractéristiques client."
+        )
+
 def predict(data: PredictionInput):
     try:
         input_df = pd.DataFrame([data.model_dump()])
