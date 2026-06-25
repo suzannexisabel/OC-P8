@@ -16,3 +16,7 @@ python-dotenv
 
 SQLAlchemy
 psycopg2-binary
+
+pytest
+pytest-cov
+httpx 
