@@ -13,6 +13,8 @@ app = FastAPI(
     version="1.0.0"
 )
 
+THRESHOLD = 0.54
+
 @app.get("/")
 def root():
     return RedirectResponse(url="/docs")
@@ -32,10 +34,14 @@ def health():
 def predict(data: PredictionInput):
     try:
         input_df = pd.DataFrame([data.model_dump()])
-        prediction = model.predict(input_df)
+
+        probability = model.predict_proba(input_df)[0][1]
+        prediction = int(probability >= THRESHOLD)
 
         return {
-            "prediction": int(prediction[0])
+            "prediction": prediction,
+            "probability": round(float(probability),4),
+            "threshold" : THRESHOLD
         }
 
     except Exception as e:
