@@ -1,10 +1,11 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import RedirectResponse
-from pydantic import BaseModel
 import pandas as pd
+import time
 
 from app.schemas import PredictionInput
 from app.model import model
+from app.monitoring_logger import log_prediction
 
 
 app = FastAPI(
@@ -32,11 +33,25 @@ def health():
         )
 
 def predict(data: PredictionInput):
-    try:
-        input_df = pd.DataFrame([data.model_dump()])
+    start_time = time.perf_counter()
+    input_data = data.model_dump()
 
-        probability = model.predict_proba(input_df)[0][1]
+    try:
+        input_df = pd.DataFrame([input_data])
+
+        probability = float(model.predict_proba(input_df)[0][1])
         prediction = int(probability >= THRESHOLD)
+
+        execution_time_ms = (time.perf_counter() - start_time) * 1000
+
+        log_prediction(
+            input_data=input_data,
+            prediction=prediction,
+            probability=probability,
+            threshold_used=THRESHOLD,
+            execution_time_ms=execution_time_ms,
+            status_code=200,
+        )
 
         return {
             "prediction": prediction,
@@ -45,4 +60,12 @@ def predict(data: PredictionInput):
         }
 
     except Exception as e:
+        log_prediction(
+            input_data=input_data,
+            prediction=prediction,
+            probability=probability,
+            threshold_used=THRESHOLD,
+            execution_time_ms=execution_time_ms,
+            status_code=200,
+        )
         raise HTTPException(status_code=500, detail=str(e))

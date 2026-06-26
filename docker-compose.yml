@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: p8_postgres
+    environment:
+      POSTGRES_USER: p8_user
+      POSTGRES_PASSWORD: p8_password
+      POSTGRES_DB: p8_monitoring
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
