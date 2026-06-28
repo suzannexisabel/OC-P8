@@ -36,6 +36,9 @@ def predict(data: PredictionInput):
     start_time = time.perf_counter()
     input_data = data.model_dump()
 
+    prediction = None
+    probability = None
+
     try:
         input_df = pd.DataFrame([input_data])
 
@@ -60,12 +63,16 @@ def predict(data: PredictionInput):
         }
 
     except Exception as e:
+        execution_time_ms = (time.perf_counter() - start_time) * 1000
+
         log_prediction(
             input_data=input_data,
             prediction=prediction,
             probability=probability,
             threshold_used=THRESHOLD,
             execution_time_ms=execution_time_ms,
-            status_code=200,
+            status_code=500,
+            error_message=str(e),
         )
+
         raise HTTPException(status_code=500, detail=str(e))
